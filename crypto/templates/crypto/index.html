@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        tr, td{
+            text-align: center;
+        }
+        table{
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            width: 100%;
+        }
+        th, td{
+            box-shadow: 0px 0px 3px 1px gray;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tickets">
+    <table cellspacing="40">
+        <tr>
+            <th>Биржа</th>
+            <th>BTC-USD</th>
+            <th>LTC-USD</th>
+            <th>ETH-USD</th>
+        </tr>
+        <tr id="Binance">
+            <td>Binance</td>
+            <td id="binance_0">-</td>
+            <td id="binance_1">-</td>
+            <td id="binance_2">-</td>
+        </tr>
+        <tr id="exmo">
+            <td>EXMO</td>
+            <td id="exmo_0">-</td>
+            <td id="exmo_1">-</td>
+            <td id="exmo_2">-</td>
+        </tr>
+        <tr id="Bittrex">
+            <td>Bittrex</td>
+            <td id="bittrex_0">-</td>
+            <td id="bittrex_1">-</td>
+            <td id="bittrex_2">-</td>
+        </tr>
+    </table>
+</div>
+<script>
+    function setPrice(elem_id, price){
+        let elem = document.getElementById(elem_id);
+        if (elem.innerText !== price ){
+            elem.innerText = price
+        }
+    }
+
+    function binance() {
+        let name = 'binance'
+        let pairs = ['BTCUSDT', 'LTCUSDT', 'ETHUSDT'];
+        pairs.forEach((pair, index) => {
+                let url = `https://api.binance.com/api/v3/ticker/price?symbol=${pair}`;
+                setInterval(async function () {
+                    const response = await fetch(url);
+                    const symbol_data = await response.json();
+                    let price = symbol_data['price'];
+                    setPrice(`${name}_${index}`, price)
+                }, 3000);
+            }
+        )
+    }
+
+    function exmo() {
+        let name = 'exmo';
+        let pairs = ['BTC_USD', 'LTC_USD', 'ETH_USD'];
+        pairs.forEach((pair, index) => {
+                let url = `https://api.exmo.com/v1.1/trades?pair=${pair}`;
+                setInterval(async function () {
+                    const response = await fetch(url);
+                    const symbol_data = await response.json();
+                    let price = symbol_data[pair][0]['price'];
+                    setPrice(`${name}_${index}`, price)
+                }, 3000);
+            }
+        )
+    }
+
+    function bittrex() {
+        let name = 'bittrex';
+        let pairs = ['BTC-USD', 'LTC-USD', 'ETH-USD'];
+        pairs.forEach((pair, index) => {
+                let url = `https://api.bittrex.com/v3/markets/${pair}/ticker`;
+                setInterval(async function () {
+                    const response = await fetch(url);
+                    const symbol_data = await response.json();
+                    let price = symbol_data['lastTradeRate'];
+                    setPrice(`${name}_${index}`, price)
+                }, 3000);
+            }
+        )
+    }
+
+    binance()
+    exmo()
+    bittrex()
+</script>
+</body>
+</html>
