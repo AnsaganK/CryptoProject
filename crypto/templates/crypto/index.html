@@ -49,6 +49,8 @@
     </table>
 </div>
 <script>
+
+    let timeOut = 1000;
     function setPrice(elem_id, price){
         let elem = document.getElementById(elem_id);
         if (elem.innerText !== price ){
@@ -62,11 +64,12 @@
         pairs.forEach((pair, index) => {
                 let url = `https://api.binance.com/api/v3/ticker/price?symbol=${pair}`;
                 setInterval(async function () {
+
                     const response = await fetch(url);
                     const symbol_data = await response.json();
                     let price = symbol_data['price'];
                     setPrice(`${name}_${index}`, price)
-                }, 3000);
+                }, timeOut);
             }
         )
     }
@@ -81,7 +84,7 @@
                     const symbol_data = await response.json();
                     let price = symbol_data[pair][0]['price'];
                     setPrice(`${name}_${index}`, price)
-                }, 3000);
+                }, timeOut);
             }
         )
     }
@@ -90,13 +93,13 @@
         let name = 'bittrex';
         let pairs = ['BTC-USD', 'LTC-USD', 'ETH-USD'];
         pairs.forEach((pair, index) => {
-                let url = `https://api.bittrex.com/v3/markets/${pair}/ticker`;
+                let url = `/bittrex/${pair}`;
                 setInterval(async function () {
-                    const response = await fetch(url, {mode: "no-cors"});
+                    const response = await fetch(url);
                     const symbol_data = await response.json();
                     let price = symbol_data['lastTradeRate'];
                     setPrice(`${name}_${index}`, price)
-                }, 3000);
+                }, timeOut);
             }
         )
     }
